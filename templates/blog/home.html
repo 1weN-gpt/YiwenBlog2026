@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block title %}逸文博客 - 首页{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Animation -->
+<section class="hero min-h-[400px] bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl mb-12 relative overflow-hidden">
+    <!-- Background Animation -->
+    <div class="absolute inset-0 opacity-30">
+        <lottie-player 
+            src="https://assets9.lottiefiles.com/packages/lf20_x17ybolp.json"
+            background="transparent"
+            speed="1"
+            style="width: 100%; height: 100%;"
+            loop
+            autoplay>
+        </lottie-player>
+    </div>
+    <div class="hero-content text-center relative z-10">
+        <div class="max-w-2xl">
+            <h1 class="text-5xl font-bold mb-6">
+                <span class="gradient-text">探索技术的边界</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8">
+                分享编程心得、技术文章与生活感悟，记录成长的每一步
+            </p>
+            <div class="flex gap-4 justify-center">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-primary">
+                    <i class="fas fa-book-open mr-2"></i>浏览文章
+                </a>
+                <a href="{% url 'blog:about' %}" class="btn btn-primary">
+                    <i class="fas fa-user mr-2"></i>关于作者
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Posts Carousel -->
+{% if featured_posts %}
+<section class="mb-12">
+    <h2 class="text-3xl font-bold mb-8 flex items-center">
+        <i class="fas fa-star text-yellow-500 mr-3"></i>
+        精选文章
+        <span class="ml-3 text-sm font-normal text-gray-500">({{ featured_posts|length }} 篇)</span>
+    </h2>
+    
+    <div class="relative">
+        <!-- Carousel Container -->
+        <div class="carousel carousel-center w-full p-4 space-x-4 rounded-box overflow-x-auto scroll-smooth scrollbar-hide" id="featuredCarousel">
+            {% for post in featured_posts %}
+            <div class="carousel-item w-full md:w-1/2 lg:w-1/3 flex-shrink-0">
+                <div class="card bg-base-100 shadow-xl card-hover w-full">
+                    {% if post.cover_image %}
+                    <figure class="h-48">
+                        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover" />
+                    </figure>
+                    {% else %}
+                    <figure class="h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                        <i class="fas fa-image text-4xl text-gray-400"></i>
+                    </figure>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="flex gap-2 mb-2 flex-wrap">
+                            {% if post.category %}
+                            <span class="badge badge-primary">{{ post.category.name }}</span>
+                            {% endif %}
+                            <span class="badge badge-ghost"><i class="fas fa-eye mr-1"></i>{{ post.views }}</span>
+                            <span class="badge badge-ghost"><i class="fas fa-thumbs-up mr-1"></i>{{ post.likes.count }}</span>
+                        </div>
+                        <h3 class="card-title text-lg line-clamp-2">
+                            <a href="{{ post.get_absolute_url }}" class="hover:text-primary transition-colors">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <p class="text-gray-600 text-sm line-clamp-2">{{ post.summary|default:post.content|truncatechars:80 }}</p>
+                        <div class="card-actions justify-between items-center mt-4">
+                            <span class="text-sm text-gray-400">{{ post.created_at|date:"Y-m-d" }}</span>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                阅读 <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Scrollbar Indicator -->
+        <div class="mt-4 mx-4 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div id="scrollProgress" class="h-full bg-primary/50 rounded-full transition-all duration-300" style="width: 33%"></div>
+        </div>
+    </div>
+</section>
+
+<style>
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>
+
+<script>
+const carousel = document.getElementById('featuredCarousel');
+const progressBar = document.getElementById('scrollProgress');
+let autoScrollInterval;
+
+// 自动轮播
+function startAutoScroll() {
+    autoScrollInterval = setInterval(() => {
+        const scrollAmount = carousel.offsetWidth / 3;
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        
+        if (carousel.scrollLeft >= maxScroll - 10) {
+            // 到达末尾，回到开头
+            carousel.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }, 4000); // 4秒切换一次
+}
+
+// 更新进度条
+function updateProgress() {
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const progress = maxScroll > 0 ? (carousel.scrollLeft / maxScroll) * 100 : 0;
+    progressBar.style.width = Math.max(33, progress) + '%';
+}
+
+// 监听滚动更新进度条
+carousel.addEventListener('scroll', updateProgress);
+
+// 鼠标悬停暂停
+carousel.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
+carousel.addEventListener('mouseleave', startAutoScroll);
+
+// 触摸拖动时暂停
+carousel.addEventListener('touchstart', () => clearInterval(autoScrollInterval));
+carousel.addEventListener('touchend', startAutoScroll);
+
+// 启动自动轮播
+startAutoScroll();
+updateProgress();
+</script>
+{% endif %}
+
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8" id="latest-posts">
+    <!-- Left Sidebar - Categories & Tags -->
+    <aside class="lg:col-span-1 space-y-8">
+        <!-- Categories -->
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <h3 class="card-title text-lg mb-4">
+                    <i class="fas fa-folder-open text-primary mr-2"></i>分类
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for category in categories %}
+                    <a href="{{ category.get_absolute_url }}" class="group flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary hover:to-primary/90 transition-all duration-300 border border-primary/20 hover:border-primary hover:shadow-md hover:shadow-primary/20">
+                        <i class="fas fa-folder text-primary group-hover:text-white transition-colors text-sm"></i>
+                        <span class="text-sm font-medium text-gray-700 group-hover:text-white transition-colors">{{ category.name }}</span>
+                    </a>
+                    {% empty %}
+                    <span class="text-gray-400 text-sm">暂无分类</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <h3 class="card-title text-lg mb-4">
+                    <i class="fas fa-tags text-secondary mr-2"></i>标签云
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in tags %}
+                    <a href="{{ tag.get_absolute_url }}" class="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gradient-to-r from-secondary/10 to-secondary/5 hover:from-secondary hover:to-secondary/90 transition-all duration-300 border border-secondary/20 hover:border-secondary hover:shadow-md hover:shadow-secondary/20 hover:-translate-y-0.5">
+                        <i class="fas fa-hashtag text-secondary/70 group-hover:text-white transition-colors text-xs"></i>
+                        <span class="text-xs font-medium text-gray-600 group-hover:text-white transition-colors">{{ tag.name }}</span>
+                    </a>
+                    {% empty %}
+                    <span class="text-gray-400 text-sm">暂无标签</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <h3 class="card-title text-lg mb-4">
+                    <i class="fas fa-chart-bar text-accent mr-2"></i>站点统计
+                </h3>
+                <div class="stats stats-vertical shadow">
+                    <div class="stat">
+                        <div class="stat-title">文章总数</div>
+                        <div class="stat-value text-primary">{{ total_posts }}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-title">分类数量</div>
+                        <div class="stat-value text-secondary">{{ categories|length }}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-title">今日访问</div>
+                        <div class="stat-value text-accent">{{ daily_visits }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Posts List -->
+    <section class="lg:col-span-3">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-clock text-primary mr-3"></i>
+            最新文章
+        </h2>
+
+        {% if posts %}
+        <div class="space-y-6">
+            {% for post in posts %}
+            <article class="card card-side bg-base-100 shadow-lg card-hover flex-col md:flex-row">
+                {% if post.cover_image %}
+                <figure class="md:w-1/3 h-48 md:h-auto">
+                    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover" />
+                </figure>
+                {% else %}
+                <figure class="md:w-1/3 h-48 md:h-auto bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                    <i class="fas fa-image text-5xl text-gray-300"></i>
+                </figure>
+                {% endif %}
+                <div class="card-body md:w-2/3">
+                    <div class="flex gap-2 mb-2">
+                        {% if post.category %}
+                        <a href="{{ post.category.get_absolute_url }}" class="badge badge-primary">{{ post.category.name }}</a>
+                        {% endif %}
+                        {% for tag in post.tags.all|slice:":3" %}
+                        <a href="{{ tag.get_absolute_url }}" class="badge badge-ghost text-xs">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    <h3 class="card-title text-xl">
+                        <a href="{{ post.get_absolute_url }}" class="hover:text-primary transition-colors">
+                            {{ post.title }}
+                        </a>
+                    </h3>
+                    <p class="text-gray-600 line-clamp-2">{{ post.summary|default:post.content|truncatechars:150 }}</p>
+                    <div class="card-actions justify-between items-center mt-4">
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-user"></i>
+                                {{ post.author.username }}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-calendar"></i>
+                                {{ post.created_at|date:"Y-m-d" }}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-eye"></i>
+                                {{ post.views }}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-thumbs-up"></i>
+                                {{ post.likes.count }}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-comment"></i>
+                                {{ post.comments.count }}
+                            </span>
+                        </div>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">
+                            阅读更多 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if posts.has_other_pages %}
+        <div class="flex justify-center mt-12">
+            <div class="join">
+                {% if posts.has_previous %}
+                <a href="?page={{ posts.previous_page_number }}" class="join-item btn">«</a>
+                {% endif %}
+                
+                {% for num in posts.paginator.page_range %}
+                    {% if posts.number == num %}
+                    <button class="join-item btn btn-active">{{ num }}</button>
+                    {% else %}
+                    <a href="?page={{ num }}" class="join-item btn">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if posts.has_next %}
+                <a href="?page={{ posts.next_page_number }}" class="join-item btn">»</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span>暂无文章，敬请期待！</span>
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+{% endblock %}

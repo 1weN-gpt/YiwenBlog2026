@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}关于 - 逸文博客{% endblock %}
+
+{% block content %}
+<!-- About Header with Animation -->
+<section class="mb-8">
+    <div class="card bg-gradient-to-br from-primary/10 to-secondary/10 shadow-lg">
+        <div class="card-body text-center">
+            <div class="flex justify-center mb-4">
+                <lottie-player 
+                    src="https://assets3.lottiefiles.com/packages/lf20_w51pcehl.json"
+                    background="transparent"
+                    speed="1"
+                    style="width: 150px; height: 150px;"
+                    loop
+                    autoplay>
+                </lottie-player>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">
+                <span class="gradient-text">逸文博客</span>
+            </h1>
+            <p class="text-xl text-gray-600">探索技术的边界，分享编程心得</p>
+        </div>
+    </div>
+</section>
+
+<!-- About Content -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- About Blog -->
+    <section>
+        <div class="card bg-base-100 shadow-lg h-full">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">
+                    <i class="fas fa-blog text-primary mr-2"></i>关于博客
+                </h2>
+                <p class="text-gray-600 leading-relaxed">
+                    逸文博客是一个基于 Django 构建的个人技术博客，致力于分享编程心得、技术文章与生活感悟。
+                    博客采用现代化的设计风格，支持响应式布局，在各种设备上都能获得良好的阅读体验。
+                </p>
+                <div class="divider"></div>
+                <h3 class="font-bold text-lg mb-2">主要功能</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>文章分类与标签管理</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>全文搜索功能</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>评论互动系统</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>文章点赞功能</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>用户注册与登录</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>响应式设计，支持移动端</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>暗黑/亮色主题切换</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Author -->
+    <section>
+        <div class="card bg-base-100 shadow-lg h-full">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">
+                    <i class="fas fa-user text-secondary mr-2"></i>关于作者
+                </h2>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="flex-shrink-0">
+                        {% if site_config.avatar %}
+                        <div class="avatar" style="width: 48px; height: 48px;">
+                            <img src="{{ site_config.avatar.url }}?v=3" alt="头像" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                        </div>
+                        {% else %}
+                        <div class="avatar placeholder" style="width: 48px; height: 48px;">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                                <i class="fas fa-user text-2xl text-primary"></i>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl">葛逸文</h3>
+                        <p class="text-gray-500">全栈开发者</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 leading-relaxed">
+                    热爱编程，喜欢探索新技术。在这个博客中，我会分享我在开发过程中遇到的问题和解决方案，
+                    希望能帮助到有同样困惑的朋友。
+                </p>
+                <div class="divider"></div>
+                <h3 class="font-bold text-lg mb-2">联系方式</h3>
+                <div class="flex gap-4">
+                    <a href="{{ site_config.github_url|default:'#' }}" class="btn btn-ghost btn-circle" target="_blank">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+                    {% if site_config.wechat_id %}
+                    <div class="btn btn-ghost btn-circle" title="微信号: {{ site_config.wechat_id }}">
+                        <i class="fab fa-weixin text-2xl"></i>
+                    </div>
+                    {% endif %}
+                    <a href="mailto:{{ site_config.email|default:'ntxfgyw@163.com' }}" class="btn btn-ghost btn-circle">
+                        <i class="fas fa-envelope text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Site Stats -->
+<section class="mt-8">
+    <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-6">
+                <i class="fas fa-chart-line text-accent mr-2"></i>站点数据
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-value text-primary">{{ total_posts }}</div>
+                    <div class="stat-title">文章总数</div>
+                </div>
+                <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-value text-secondary">{{ total_views|default:0 }}</div>
+                    <div class="stat-title">总阅读量</div>
+                </div>
+                <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-value text-accent">{{ total_likes|default:0 }}</div>
+                    <div class="stat-title">总点赞数</div>
+                </div>
+                <div class="stat bg-base-200 rounded-lg">
+                    <div class="stat-value text-info">{{ total_comments|default:0 }}</div>
+                    <div class="stat-title">总评论数</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="mt-8">
+    <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-6">
+                <i class="fas fa-code text-accent mr-2"></i>技术栈
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for tech in tech_stack %}
+                <div class="text-center p-4 bg-base-200 rounded-lg hover:shadow-md transition-shadow">
+                    <i class="{{ tech.icon }} text-4xl {{ tech.color }} mb-2"></i>
+                    <p class="font-medium">{{ tech.name }}</p>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center text-gray-400 py-4">
+                    暂无技术栈配置
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline -->
+<section class="mt-8">
+    <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-6">
+                <i class="fas fa-history text-primary mr-2"></i>发展历程
+            </h2>
+            <ul class="timeline timeline-vertical">
+                <li>
+                    <div class="timeline-start">2026.03</div>
+                    <div class="timeline-middle">
+                        <i class="fas fa-rocket text-primary"></i>
+                    </div>
+                    <div class="timeline-end timeline-box">博客正式上线</div>
+                    <hr/>
+                </li>
+                <li>
+                    <hr/>
+                    <div class="timeline-start">持续</div>
+                    <div class="timeline-middle">
+                        <i class="fas fa-code text-secondary"></i>
+                    </div>
+                    <div class="timeline-end timeline-box">不断更新优化中...</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+{% endblock %}

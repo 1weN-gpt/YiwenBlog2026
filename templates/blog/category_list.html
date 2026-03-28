@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}所有分类 - 逸文博客{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="mb-8">
+    <div class="card bg-base-100 shadow-lg">
+        <div class="card-body">
+            <div class="text-sm breadcrumbs mb-4">
+                <ul>
+                    <li><a href="{% url 'blog:home' %}">首页</a></li>
+                    <li class="text-gray-500">分类</li>
+                </ul>
+            </div>
+            <h1 class="text-3xl font-bold flex items-center">
+                <i class="fas fa-folder-open text-primary mr-3"></i>
+                所有分类
+            </h1>
+            <p class="mt-2 text-gray-500">共 {{ categories|length }} 个分类</p>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Grid -->
+<section>
+    {% if categories %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for category in categories %}
+        <a href="{{ category.get_absolute_url }}" class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <h2 class="card-title text-xl">{{ category.name }}</h2>
+                    <span class="badge badge-primary">{{ category.post_count }} 篇</span>
+                </div>
+                {% if category.description %}
+                <p class="text-gray-600 mt-2">{{ category.description|truncatechars:100 }}</p>
+                {% else %}
+                <p class="text-gray-400 mt-2">暂无描述</p>
+                {% endif %}
+                <div class="card-actions justify-end mt-4">
+                    <span class="text-primary text-sm">查看文章 <i class="fas fa-arrow-right ml-1"></i></span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <span>暂无分类</span>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

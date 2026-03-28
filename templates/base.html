@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}逸文博客{% endblock %}</title>
+    <meta name="description" content="{% block description %}一个精美的个人博客{% endblock %}">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- DaisyUI CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        /* 导航链接样式 */
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: hsl(var(--bc) / 0.7);
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        .nav-link:hover {
+            color: hsl(var(--p));
+            background: hsl(var(--p) / 0.1);
+        }
+        .nav-link.active {
+            color: hsl(var(--p));
+            background: hsl(var(--p) / 0.15);
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 2px;
+        }
+        /* 玻璃拟态导航栏 */
+        .glass-nav {
+            background: hsl(var(--b1) / 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid hsl(var(--bc) / 0.05);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-base-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="navbar glass-nav sticky top-0 z-50 px-4 lg:px-8">
+        <div class="navbar-start gap-2">
+            <div class="dropdown lg:hidden">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                    <i class="fas fa-bars text-xl"></i>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a href="{% url 'blog:home' %}">首页</a></li>
+                    <li><a href="{% url 'blog:post_list' %}">文章</a></li>
+                    <li><a href="{% url 'blog:categories' %}">分类</a></li>
+                    <li><a href="{% url 'blog:about' %}">关于</a></li>
+                </ul>
+            </div>
+            <a href="{% url 'blog:home' %}" class="btn btn-ghost text-xl font-bold gap-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <i class="fas fa-feather-alt text-white text-sm"></i>
+                </div>
+                <span class="gradient-text hidden sm:inline">逸文博客</span>
+            </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <nav class="flex items-center gap-1 bg-base-200/50 rounded-full px-2 py-1">
+                <a href="{% url 'blog:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="fas fa-home mr-2 text-sm"></i>首页
+                </a>
+                <a href="{% url 'blog:post_list' %}" class="nav-link {% if request.resolver_match.url_name == 'post_list' %}active{% endif %}">
+                    <i class="fas fa-file-alt mr-2 text-sm"></i>文章
+                </a>
+                <a href="{% url 'blog:categories' %}" class="nav-link {% if request.resolver_match.url_name == 'categories' or request.resolver_match.url_name == 'category' %}active{% endif %}">
+                    <i class="fas fa-folder mr-2 text-sm"></i>分类
+                </a>
+                <a href="{% url 'blog:about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                    <i class="fas fa-user mr-2 text-sm"></i>关于
+                </a>
+            </nav>
+        </div>
+        <div class="navbar-end gap-2">
+            <button class="btn btn-ghost btn-circle" onclick="toggleTheme()">
+                <i class="fas fa-moon text-xl" id="theme-icon"></i>
+            </button>
+            <form action="{% url 'blog:search' %}" method="get" class="form-control hidden md:block">
+                <input type="text" name="q" placeholder="搜索..." value="{{ request.GET.q }}" class="input input-bordered input-sm w-24 md:w-auto" />
+            </form>
+            
+            <!-- 用户认证 -->
+            {% if user.is_authenticated %}
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
+                    <div class="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
+                        <span class="text-lg font-bold">{{ user.username|first|upper }}</span>
+                    </div>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li class="menu-title"><span>{{ user.username }}</span></li>
+                    <li><a href="{% url 'blog:logout' %}"><i class="fas fa-sign-out-alt mr-2"></i>退出登录</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="{% url 'blog:login' %}" class="btn btn-ghost btn-sm">登录</a>
+            <a href="{% url 'blog:register' %}" class="btn btn-primary btn-sm">注册</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-10 bg-base-200 text-base-content rounded mt-20">
+        <!-- 友情链接与联系方式 -->
+        <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 mb-6">
+            <!-- 友情链接 -->
+            <div class="flex items-center gap-4">
+                <span class="text-gray-500">友情链接：</span>
+                <nav class="flex gap-4">
+                    {% if site_config.friend_link_1_name %}
+                    <a href="{{ site_config.friend_link_1_url }}" class="link link-hover" target="_blank">{{ site_config.friend_link_1_name }}</a>
+                    {% endif %}
+                    {% if site_config.friend_link_2_name %}
+                    <a href="{{ site_config.friend_link_2_url }}" class="link link-hover" target="_blank">{{ site_config.friend_link_2_name }}</a>
+                    {% endif %}
+                    {% if site_config.friend_link_3_name %}
+                    <a href="{{ site_config.friend_link_3_url }}" class="link link-hover" target="_blank">{{ site_config.friend_link_3_name }}</a>
+                    {% endif %}
+                </nav>
+            </div>
+            
+            <!-- 联系方式 -->
+            <div class="flex items-center gap-4">
+                <span class="text-gray-500">联系方式：</span>
+                <nav class="flex gap-2">
+                    <a href="{{ site_config.github_url|default:'#' }}" class="btn btn-ghost btn-circle btn-sm" target="_blank" title="GitHub"><i class="fab fa-github text-lg"></i></a>
+                    {% if site_config.wechat_id %}
+                    <div class="btn btn-ghost btn-circle btn-sm" title="微信号: {{ site_config.wechat_id }}"><i class="fab fa-weixin text-lg"></i></div>
+                    {% endif %}
+                    <a href="mailto:{{ site_config.email|default:'ntxfgyw@163.com' }}" class="btn btn-ghost btn-circle btn-sm" title="邮箱"><i class="fas fa-envelope text-lg"></i></a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- 版权信息 -->
+        <div class="text-center pt-4 border-t border-base-300">
+            <p>Copyright © 2026 - 逸文博客 - All rights reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载时应用保存的主题
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            html.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        })();
+        
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

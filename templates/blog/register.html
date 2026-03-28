@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}注册 - 逸文博客{% endblock %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+        <div class="card-body">
+            <!-- Lottie Animation -->
+            <div class="flex justify-center mb-4">
+                <lottie-player 
+                    src="https://assets10.lottiefiles.com/packages/lf20_5njp3vgg.json"
+                    background="transparent"
+                    speed="1"
+                    style="width: 200px; height: 200px;"
+                    loop
+                    autoplay>
+                </lottie-player>
+            </div>
+            
+            <h2 class="card-title text-2xl text-center justify-center mb-6">
+                <i class="fas fa-user-plus text-primary mr-2"></i>用户注册
+            </h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mb-4">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post" action="{% url 'blog:register' %}">
+                {% csrf_token %}
+                
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">用户名</span>
+                    </label>
+                    <input type="text" name="username" class="input input-bordered" placeholder="请输入用户名" required />
+                </div>
+                
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">邮箱</span>
+                    </label>
+                    <input type="email" name="email" class="input input-bordered" placeholder="请输入邮箱" required />
+                </div>
+                
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">密码</span>
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" class="input input-bordered w-full pr-10" placeholder="密码至少6位" required />
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-control mb-6">
+                    <label class="label">
+                        <span class="label-text">确认密码</span>
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="password_confirm" name="password_confirm" class="input input-bordered w-full pr-10" placeholder="请再次输入密码" required />
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password_confirm', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full">
+                    <i class="fas fa-user-plus mr-2"></i>注册
+                </button>
+            </form>
+            
+            <div class="divider">或</div>
+            
+            <div class="text-center space-y-2">
+                <p>已有账号？<a href="{% url 'blog:login' %}" class="link link-primary">立即登录</a></p>
+                <p><a href="{% url 'blog:home' %}" class="link link-secondary text-sm">以访客身份访问</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+{% endblock %}
