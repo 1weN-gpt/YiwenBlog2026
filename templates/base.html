@@ -166,9 +166,9 @@
         <!-- 友情链接与联系方式 -->
         <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 mb-6">
             <!-- 友情链接 -->
-            <div class="flex items-center gap-4">
-                <span class="text-gray-500">友情链接：</span>
-                <nav class="flex gap-4">
+            <div class="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
+                <span class="text-gray-500 whitespace-nowrap">友情链接：</span>
+                <nav class="flex gap-4 flex-wrap justify-center">
                     {% if site_config.friend_link_1_name %}
                     <a href="{{ site_config.friend_link_1_url }}" class="link link-hover" target="_blank">{{ site_config.friend_link_1_name }}</a>
                     {% endif %}
@@ -182,9 +182,9 @@
             </div>
             
             <!-- 联系方式 -->
-            <div class="flex items-center gap-4">
-                <span class="text-gray-500">联系方式：</span>
-                <nav class="flex gap-2">
+            <div class="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
+                <span class="text-gray-500 whitespace-nowrap">联系方式：</span>
+                <nav class="flex gap-2 flex-wrap justify-center">
                     <a href="{{ site_config.github_url|default:'#' }}" class="btn btn-ghost btn-circle btn-sm" target="_blank" title="GitHub"><i class="fab fa-github text-lg"></i></a>
                     {% if site_config.wechat_id %}
                     <div class="btn btn-ghost btn-circle btn-sm" title="微信号: {{ site_config.wechat_id }}"><i class="fab fa-weixin text-lg"></i></div>
