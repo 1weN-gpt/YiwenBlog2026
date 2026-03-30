@@ -38,14 +38,24 @@
                     <label class="label">
                         <span class="label-text">用户名</span>
                     </label>
-                    <input type="text" name="username" class="input input-bordered" placeholder="请输入用户名" required />
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" name="username" class="input input-bordered w-full pl-10" placeholder="请输入用户名" required />
+                    </div>
                 </div>
                 
                 <div class="form-control mb-4">
                     <label class="label">
                         <span class="label-text">邮箱</span>
                     </label>
-                    <input type="email" name="email" class="input input-bordered" placeholder="请输入邮箱" required />
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <input type="email" name="email" class="input input-bordered w-full pl-10" placeholder="请输入邮箱" required />
+                    </div>
                 </div>
                 
                 <div class="form-control mb-4">
@@ -53,7 +63,10 @@
                         <span class="label-text">密码</span>
                     </label>
                     <div class="relative">
-                        <input type="password" id="password" name="password" class="input input-bordered w-full pr-10" placeholder="密码至少6位" required />
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="password" name="password" class="input input-bordered w-full pl-10 pr-10" placeholder="密码至少6位" required />
                         <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password', this)">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -65,7 +78,10 @@
                         <span class="label-text">确认密码</span>
                     </label>
                     <div class="relative">
-                        <input type="password" id="password_confirm" name="password_confirm" class="input input-bordered w-full pr-10" placeholder="请再次输入密码" required />
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="password_confirm" name="password_confirm" class="input input-bordered w-full pl-10 pr-10" placeholder="请再次输入密码" required />
                         <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword('password_confirm', this)">
                             <i class="fas fa-eye"></i>
                         </button>

@@ -150,8 +150,8 @@
                 </ul>
             </div>
             {% else %}
-            <a href="{% url 'blog:login' %}" class="btn btn-ghost btn-sm">登录</a>
-            <a href="{% url 'blog:register' %}" class="btn btn-primary btn-sm">注册</a>
+            <a href="{% url 'blog:login' %}" class="btn btn-outline btn-primary btn-sm"><i class="fas fa-sign-in-alt mr-1"></i>登录</a>
+            <a href="{% url 'blog:register' %}" class="btn btn-outline btn-primary btn-sm"><i class="fas fa-user-plus mr-1"></i>注册</a>
             {% endif %}
         </div>
     </nav>
