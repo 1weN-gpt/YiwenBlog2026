@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn YiwenBlog.wsgi:application --bind 0.0.0.0:$PORT
+web: python manage.py migrate && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='gyiwen').exists() or User.objects.create_superuser('gyiwen', 'ntxfgyw@163.com', 'Gyw991027')" | python manage.py shell && gunicorn YiwenBlog.wsgi:application --bind 0.0.0.0:$PORT
